@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/6821/6821002.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Ventas Tecnológicas Avanzado</title>
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Encabezado -->
+    <div class="header">
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        <h1>Dashboard de Ventas Artículos Tecnológicos</h1>
+        <img src="https://avatars.githubusercontent.com/u/38921558?v=4" alt="Foto de perfil">
+        <div class="social-icons">
+            <a href="https://www.linkedin.com/in/juancitopeña/" target="_blank" class="mx-2">
+                <i class="fab fa-linkedin fa-1x"></i>
+            </a>
+            <a href="https://www.youtube.com/channel/UCSob-3E5z4IHtMF5B4bN-FA" target="_blank" class="mx-2">
+                <i class="fab fa-youtube fa-1x"></i>
+            </a>
+            <a href="https://github.com/JUANCITOPENA" target="_blank" class="mx-2">
+                <i class="fab fa-github fa-1x"></i>
+            </a>
+        </div>
+        <br>
+        <div class="data-source">
+            <a href="https://raw.githubusercontent.com/JUANCITOPENA/RECURSOS-DE-BASE-DE-DATOS-Y-DATOS-CURSOS-SQL-SERVER-Y-ANALISIS-DE-DATOS/refs/heads/main/ventas_tecnologia.json" target="_blank">📊 Fuente de Datos</a>
+        </div>
+    </div>
+
+    <!-- Sección de Filtros -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light filter-section">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarFilters" aria-controls="navbarFilters" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarFilters">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <select class="form-select" id="clienteFilter">
+                            <option value="">Cliente</option>
+                        </select>
+                    </li>
+                    <li class="nav-item">
+                        <select class="form-select" id="vendedorFilter">
+                            <option value="">Vendedor</option>
+                        </select>
+                    </li>
+                    <li class="nav-item">
+                        <select class="form-select" id="productoFilter">
+                            <option value="">Producto</option>
+                        </select>
+                    </li>
+                    <li class="nav-item">
+                        <select class="form-select" id="localidadFilter">
+                            <option value="">Localidad</option>
+                        </select>
+                    </li>
+                    <li class="nav-item">
+                        <input type="date" class="form-control" id="fechaInicialFilter" placeholder="Fecha Inicial">
+                    </li>
+                    <li class="nav-item">
+                        <input type="date" class="form-control" id="fechaFinalFilter" placeholder="Fecha Final">
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="filter-buttons">
+        <button class="btn btn-primary" onclick="applyFilters()">Aplicar Filtros</button>
+        <button class="btn btn-secondary" onclick="clearFilters()">Eliminar Filtros</button>
+    </div>
+<br>
+
+    <!-- Card Group -->
+    <div class="card-group">
+        <div class="card-item">
+            <i class="fas fa-boxes"></i>
+            <p>Cantidad</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-money-bill-wave"></i>
+            <p>Total Gral $</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-money-check-alt"></i>
+            <p>Costo $</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-chart-line"></i>
+            <p>Margen $</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-chart-bar"></i>
+            <p>Margen %</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-users"></i>
+            <p>Total Cliente</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-user-tie"></i>
+            <p>Total Vendedores</p>
+        </div>
+        <div class="card-item">
+            <i class="fas fa-shopping-cart"></i>
+            <p>Total Productos</p>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard">
+        <!-- Sección de Clientes -->
+        <div class="card">
+            <h2>🤝 Top 5 Clientes</h2>
+            <table id="topClientes">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Total Compras</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="clientesChart"></canvas>
+        </div>
+
+        <!-- Sección de Vendedores -->
+        <div class="card">
+            <h2>👥 Top 5 Rendimiento de Vendedores</h2>
+            <table id="vendedoresPerformance">
+                <thead>
+                    <tr>
+                        <th>Vendedor</th>
+                        <th>Total Ventas</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="vendedoresChart"></canvas>
+        </div>
+
+        <!-- Sección de Productos -->
+        <div class="card">
+            <h2>📱 Top 5 Análisis de Productos</h2>
+            <table id="analisisProductos">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Total Ventas</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="productosChart"></canvas>
+        </div>
+
+        <!-- Sección de Localidades -->
+        <div class="card">
+            <h2>🌍 Top 5 Ventas por Localidad</h2>
+            <table id="localidadesVentas">
+                <thead>
+                    <tr>
+                        <th>Localidad</th>
+                        <th>Total Ventas</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="localidadesChart"></canvas>
+        </div>
+
+        <!-- Sección de Análisis Temporal -->
+        <div class="card">
+            <h2>⏰ Análisis Temporal</h2>
+            <div id="temporalAnalytics">
+                <h3>Por Mes</h3>
+                <canvas id="ventasMesChart"></canvas>
+                <h3>Por Año</h3>
+                <canvas id="ventasAnualesChart"></canvas>
+                <h3>Por Cuatrimestre</h3>
+                <canvas id="ventasCuatrimestralesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Sección de Ventas por Año -->
+        <div class="card">
+            <h2>📅 Ventas por Año</h2>
+            <table id="ventasAnualesTable">
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Total Ventas</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="ventasAnualesLineChart"></canvas>
+        </div>
+
+        <!-- Sección de Crecimiento de Ventas -->
+        <div class="card">
+            <h2>📈 Crecimiento de Ventas</h2>
+            <table id="crecimientoVentasTable">
+                <thead>
+                    <tr>
+                        <th>Año</th>
+                        <th>Ventas</th>
+                        <th>Crecimiento %</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="crecimientoVentasChart"></canvas>
+        </div>
+
+        <!-- Sección de Ranking de Vendedores -->
+        <div class="card">
+            <h2>🏆 Ranking de Vendedores</h2>
+            <table id="rankingVendedoresTable">
+                <thead>
+                    <tr>
+                        <th>Vendedor</th>
+                        <th>Total Ventas</th>
+                        <th>Porcentaje de Ventas</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <canvas id="rankingVendedoresChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2025 Dashboard de Ventas Tienda Tecnológicas.JPV.</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
